@@ -8,6 +8,7 @@ class Ball {
     this.color = random(this.colourGroup);
     this.mode = 'sad';
     this.happyTimestamp = 0;
+    this.angerTime = 0;
     this.colours = args.colours;
 
   }
@@ -20,35 +21,73 @@ class Ball {
     ellipse(0, 0, this.r)
     if (this.mode == 'happy') {
       fill(255)
-      ellipse(-10, -10, this.r / 3, this.r / 3)
+      ellipse(-16, -9, this.r / 2.5, this.r / 3)
       fill(0)
-      ellipse(-10, -10, this.r / 4, this.r / 4)
+      ellipse(-16, -9, this.r / 4, this.r / 4)
       fill(255)
-      ellipse(10, -10, this.r / 3, this.r / 3)
+      ellipse(16, -9, this.r / 2.5, this.r / 3)
       fill(0)
-      ellipse(10, -10, this.r / 4, this.r / 4)
-      stroke(0)
-      noFill();
+      ellipse(16, -9, this.r / 4, this.r / 4)
+      noStroke(0)
+      fill(255);
       strokeWeight(2)
-      arc(0, 5, 18, 15, 0, PI)
-    } else {
-      fill(255)
-      arc(-10, -10, this.r / 3, this.r / 3, 0, PI)
+      arc(0, 13, 25, 25, 0, PI)
+    }
+    if (this.mode == 'sad') {
+      push()
+      rotate(0.09)
       fill(0)
-      arc(-10, -10, this.r / 4, this.r / 4, 0, PI)
-      fill(255)
-      arc(10, -10, this.r / 3, this.r / 3, 0, PI)
+      rect(-28, -18, this.r / 3, this.r / 15)
+      pop()
+      push()
+      rotate(-0.09)
       fill(0)
-      arc(10, -10, this.r / 4, this.r / 4, 0, PI)
-      stroke(0)
-      noFill();
+      rect(5, -18, this.r / 3, this.r / 15)
+      pop()
+      fill(255)
+      arc(-16, -10, this.r / 2.5, this.r / 2.5, 0, PI)
+      fill(0)
+      arc(-16, -10, this.r / 3.5, this.r / 3.5, 0, PI)
+      fill(255)
+      arc(16, -10, this.r / 2.5, this.r / 2.5, 0, PI)
+      fill(0)
+      arc(16, -10, this.r / 3.5, this.r / 3.5, 0, PI)
+      noStroke()
+      fill(255);
       strokeWeight(2)
-      arc(0, 10, 15, 12, PI, TWO_PI);
+      arc(0, 23, 25, 20, PI, TWO_PI);
+      pop()
+    }
+    if (this.mode == 'anger') {
+      push()
+      rotate(0.3)
+      fill(0)
+      rect(-30, -16, this.r / 3, this.r / 15)
+      pop()
+      push()
+      rotate(-0.3)
+      fill(0)
+      rect(7, -16, this.r / 3, this.r / 15)
+      pop()
+      fill(255)
+      arc(-16, -10, this.r / 2.5, this.r / 2.5, 0, PI)
+      fill(0)
+      arc(-16, -10, this.r / 3.5, this.r / 3.5, 0, PI)
+      fill(255)
+      arc(16, -10, this.r / 2.5, this.r / 2.5, 0, PI)
+      fill(0)
+      arc(16, -10, this.r / 3.5, this.r / 3.5, 0, PI)
+      stroke(0)
+      fill(255)
+      strokeWeight(2)
+      ellipse(0, 20, 25, 16);
+      pop()
     }
 
 
     pop()
   }
+
 
   update() {
     this.p.x += this.v.x
@@ -62,7 +101,9 @@ class Ball {
     }
 
     if (this.mode === 'happy' && millis() - this.happyTimestamp >= 5000) {
-      this.mode = 'sad'
+      this.mode = 'sad';
+    } else if (this.mode === 'anger' && millis() - this.angerTimestamp >= 2000) {
+      this.mode = 'sad';
     }
   }
 
@@ -83,14 +124,25 @@ class Ball {
       PreBall.p.x += cos(collisionAngle) * (radiusSum - distance) / 2;
       PreBall.p.y += sin(collisionAngle) * (radiusSum - distance) / 2;
 
+      let sameColourGroup = false;
+
       for (let colourGroup of this.colours) {
         if (colourGroup.includes(this.color) && colourGroup.includes(PreBall.color)) {
-          this.mode = 'happy'
-          PreBall.mode = 'happy'
-          this.happyTimestamp = millis()
-          PreBall.happyTimestamp = millis()
+          sameColourGroup = true;
           break;
         }
+      }
+
+      if (!sameColourGroup) {
+        this.mode = 'anger';
+        this.angerTimestamp = millis();
+        PreBall.mode = 'anger';
+        PreBall.angerTimestamp = millis();
+      } else {
+        this.mode = 'happy';
+        this.happyTimestamp = millis();
+        PreBall.mode = 'happy';
+        PreBall.happyTimestamp = millis();
       }
     }
   }
@@ -99,18 +151,18 @@ class Ball {
 
 var ball
 var balls = []
-let redColour = ["#FF6B00", "#FF0F00"]
-let greenColour = ["#5C7C3B", "#CDE460"]
-let blueColour = ["#559DCD", "#2032D7"]
+let redColour = ["#F55900"]
+let greenColour = ["#5C7C3B"]
+let blueColour = ["#4230fa"]
 
 let colours = [redColour, greenColour, blueColour]
 
 function setup() {
   createCanvas(1680, 800);
   background(0);
-  for (var i = 0; i < 30; i++) {
+  for (var i = 0; i < 20; i++) {
     let ball = new Ball({
-      r: 50,
+      r: 70,
       p: { x: random(50, width - 50), y: random(50, height - 50) },
       colours: colours
     });
