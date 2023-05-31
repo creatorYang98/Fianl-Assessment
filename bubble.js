@@ -100,7 +100,12 @@ class Ball {
     } else if (this.mode === 'anger' && millis() - this.angerTimestamp >= 2000) {
       this.mode = 'sad';
     }
+
+    for (let barrier of barriers) {
+      this.checkBarrierCollision(barrier);
+    }
   }
+
   changeColour() {
     let newColour = random(this.colours.flat());
     while (newColour === this.currentColor) {
@@ -150,5 +155,27 @@ class Ball {
       }
     }
   }
+
+  checkBarrierCollision(barrier) {
+    let dx = barrier.position.x - this.p.x;
+    let dy = barrier.position.y - this.p.y;
+    let distance = sqrt(dx * dx + dy * dy);
+    let radiusSum = this.r / 2 + barrier.circleRadius;
+
+    if (distance < radiusSum) {
+      let collisionAngle = atan2(dy, dx);
+
+      this.v.x = -this.v.x;
+      this.v.y = -this.v.y;
+
+      let overlap = radiusSum - distance;
+      this.p.x -= overlap * cos(collisionAngle);
+      this.p.y -= overlap * sin(collisionAngle);
+
+      barrier.lifespan--;
+    }
+  }
+
+
 
 }

@@ -3,6 +3,7 @@ var balls = []
 let redColour = ["#F55900"]
 let greenColour = ["#5C7C3B"]
 let blueColour = ["#4230fa"]
+let barriers = []
 
 let colours = [redColour, greenColour, blueColour]
 
@@ -43,10 +44,25 @@ function draw() {
     pop()
   }
 
+  for (let barrier of barriers) {
+    drawCircle(barrier)
+  }
+
+  for (let i = barriers.length - 1; i >= 0; i--) {
+    let barrier = barriers[i];
+    drawCircle(barrier);
+    if (barrier.lifespan <= 0) {
+      barriers.splice(i, 1);
+    }
+  }
+
   noStroke()
   for (let i = 0; i < balls.length; i++) {
     for (let j = i + 1; j < balls.length; j++) {
       balls[i].checkCollision(balls[j])
+    }
+    for (let barrier of barriers) {
+      balls[i].checkBarrierCollision(barrier);
     }
     balls[i].draw()
     balls[i].update()
@@ -64,4 +80,12 @@ function randomSpeed() {
     }
   }
   return speed;
+}
+
+function mouseClicked() {
+  if (barriers.length >= 10) {
+    barriers.shift(); // Remove the first barrier
+  }
+  let newBarrier = makeCircle(mouseX, mouseY);
+  barriers.push(newBarrier);
 }
