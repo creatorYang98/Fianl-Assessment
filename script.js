@@ -5,18 +5,17 @@ class Ball {
     this.p = args.p;
     this.v = { x: randomSpeed(), y: randomSpeed() };
     this.colourGroup = random(args.colours);
-    this.color = random(this.colourGroup);
+    this.currentColor = random(this.colourGroup);
     this.mode = 'sad';
     this.happyTimestamp = 0;
     this.angerTime = 0;
     this.colours = args.colours;
-
   }
 
   draw() {
     push()
     translate(this.p.x, this.p.y)
-    fill(this.color)
+    fill(this.currentColor)
     noStroke()
     ellipse(0, 0, this.r)
     if (this.mode == 'happy') {
@@ -106,6 +105,13 @@ class Ball {
       this.mode = 'sad';
     }
   }
+  changeColour() {
+    let newColour = random(this.colours.flat());
+    while (newColour === this.currentColor) {
+      newColour = random(this.colours.flat());
+    }
+    this.currentColor = newColour;
+  }
 
   checkCollision(PreBall) {
     let dx = PreBall.p.x - this.p.x;
@@ -127,7 +133,7 @@ class Ball {
       let sameColourGroup = false;
 
       for (let colourGroup of this.colours) {
-        if (colourGroup.includes(this.color) && colourGroup.includes(PreBall.color)) {
+        if (colourGroup.includes(this.currentColor) && colourGroup.includes(PreBall.currentColor)) {
           sameColourGroup = true;
           break;
         }
@@ -138,6 +144,8 @@ class Ball {
         this.angerTimestamp = millis();
         PreBall.mode = 'anger';
         PreBall.angerTimestamp = millis();
+        this.changeColour();
+        PreBall.changeColour();
       } else {
         this.mode = 'happy';
         this.happyTimestamp = millis();
@@ -148,6 +156,8 @@ class Ball {
   }
 
 }
+
+
 
 var ball
 var balls = []
