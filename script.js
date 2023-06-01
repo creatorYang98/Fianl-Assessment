@@ -5,8 +5,11 @@ let greenColour = ["#ffde59"]
 let blueColour = ["#4230fa"]
 let barriers = []
 let texture
+let backgroundColours = ["#094074", "#3c6997", "#5adbff", "#718e54", "#fe9000"];
+let currentBgColour = backgroundColours[0];
 
 let colours = [redColour, greenColour, blueColour]
+let bubbles = []
 
 function setup() {
   createCanvas(1680, 800);
@@ -21,17 +24,21 @@ function setup() {
   }
   texture = createGraphics(width, height)
   texture.loadPixels()
-  for (var i = 0; i < width + 50; i ++) { 
-    for (var o = 0; o < height + 50; o ++) { 
+  for (var i = 0; i < width + 50; i++) {
+    for (var o = 0; o < height + 50; o++) {
       texture.set(i, o, color(100, noise(i / 3, o / 3, i * o / 50) * random([0, 40, 80])))
     }
   }
   texture.updatePixels()
+
+  for (var i = 0; i < 5; i++) {
+    let newBarrier = createBarrier(random(width), random(height));
+    barriers.push(newBarrier);
+  }
 }
 
-
 function draw() {
-  fill('#094074')
+  fill(currentBgColour)
   rect(0, 0, width, height)
 
   push()
@@ -56,11 +63,32 @@ function draw() {
       particles[i].checkCollision(particles[j])
     }
     for (let barrier of barriers) {
+      let collisionPoint = particles[i].checkBarrierCollision(barrier);
+      if (collisionPoint) {
+        let newBubble = new Bubble(collisionPoint.x, collisionPoint.y);
+        bubbles.push(newBubble);
+      }
+    }
+    particles[i].draw()
+    particles[i].update()
+  } for (let i = 0; i < particles.length; i++) {
+    for (let j = i + 1; j < particles.length; j++) {
+      particles[i].checkCollision(particles[j])
+    }
+    for (let barrier of barriers) {
       particles[i].checkBarrierCollision(barrier);
     }
     particles[i].draw()
     particles[i].update()
   }
+  for (let i = bubbles.length - 1; i >= 0; i--) {
+    let bubble = bubbles[i];
+    bubble.update();
+    bubble.draw();
+  }
+  fill(255);
+  textSize(32);
+  text("Background", 10, 40);
 }
 
 function randomSpeed() {
@@ -76,10 +104,14 @@ function randomSpeed() {
 }
 
 function mouseClicked() {
-  if (barriers.length >= 10) {
-    barriers.shift();
+  if (mouseX > 10 && mouseX < 200 && mouseY > 10 && mouseY < 50) {
+    let randomIndex = floor(random(backgroundColours.length));
+    currentBgColour = backgroundColours[randomIndex];
+  } else {
+    if (barriers.length >= 10) {
+      barriers.shift();
+    }
+    let newBarrier = createBarrier(mouseX, mouseY);
+    barriers.push(newBarrier);
   }
-  let newBarrier = createBarrier(mouseX, mouseY);
-  barriers.push(newBarrier);
 }
-
