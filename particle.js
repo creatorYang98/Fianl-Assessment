@@ -1,10 +1,10 @@
-class Ball {
+class Particle {
   constructor(args) {
     this.r = args.r;
     this.p = args.p;
     this.v = { x: randomSpeed(), y: randomSpeed() };
     this.colourGroup = random(args.colours);
-    this.currentColor = random(this.colourGroup);
+    this.currentColour = random(this.colourGroup);
     this.mode = 'sad';
     this.happyTimestamp = 0;
     this.angerTime = 0;
@@ -15,16 +15,16 @@ class Ball {
   draw() {
     push()
     translate(this.p.x, this.p.y)
-    fill(this.currentColor)
+    fill(this.currentColour)
     noStroke()
     ellipse(0, 0, this.r)
     if (this.mode == 'happy') {
       fill(255)
-      ellipse(-16, -9, this.r / 2.5, this.r / 3)
+      ellipse(-16, -9, this.r / 2.5, this.r / 2.5)
       fill(0)
       ellipse(-16, -9, this.r / 4, this.r / 4)
       fill(255)
-      ellipse(16, -9, this.r / 2.5, this.r / 3)
+      ellipse(16, -9, this.r / 2.5, this.r / 2.5)
       fill(0)
       ellipse(16, -9, this.r / 4, this.r / 4)
       noStroke(0)
@@ -116,33 +116,33 @@ class Ball {
 
   changeColour() {
     let newColour = random(this.colours.flat());
-    while (newColour === this.currentColor) {
+    while (newColour === this.currentColour) {
       newColour = random(this.colours.flat());
     }
-    this.currentColor = newColour;
+    this.currentColour = newColour;
   }
 
-  checkCollision(PreBall) {
-    let dx = PreBall.p.x - this.p.x;
-    let dy = PreBall.p.y - this.p.y;
+  checkCollision(PreParticle) {
+    let dx = PreParticle.p.x - this.p.x;
+    let dy = PreParticle.p.y - this.p.y;
     let distance = sqrt(dx * dx + dy * dy);
-    let radiusSum = this.r / 2 + PreBall.r / 2
+    let radiusSum = this.r / 2 + PreParticle.r / 2
 
     if (distance < radiusSum) {
       let tempV = { x: this.v.x, y: this.v.y };
-      this.v = { x: PreBall.v.x, y: PreBall.v.y };
-      PreBall.v = { x: tempV.x, y: tempV.y };
+      this.v = { x: PreParticle.v.x, y: PreParticle.v.y };
+      PreParticle.v = { x: tempV.x, y: tempV.y };
 
       let collisionAngle = atan2(dy, dx);
       this.p.x -= cos(collisionAngle) * (radiusSum - distance) / 2;
       this.p.y -= sin(collisionAngle) * (radiusSum - distance) / 2;
-      PreBall.p.x += cos(collisionAngle) * (radiusSum - distance) / 2;
-      PreBall.p.y += sin(collisionAngle) * (radiusSum - distance) / 2;
+      PreParticle.p.x += cos(collisionAngle) * (radiusSum - distance) / 2;
+      PreParticle.p.y += sin(collisionAngle) * (radiusSum - distance) / 2;
 
       let sameColourGroup = false;
 
       for (let colourGroup of this.colours) {
-        if (colourGroup.includes(this.currentColor) && colourGroup.includes(PreBall.currentColor)) {
+        if (colourGroup.includes(this.currentColour) && colourGroup.includes(PreParticle.currentColour)) {
           sameColourGroup = true;
           break;
         }
@@ -151,15 +151,15 @@ class Ball {
       if (!sameColourGroup) {
         this.mode = 'anger';
         this.angerTimestamp = millis();
-        PreBall.mode = 'anger';
-        PreBall.angerTimestamp = millis();
+        PreParticle.mode = 'anger';
+        PreParticle.angerTimestamp = millis();
         this.changeColour();
-        PreBall.changeColour();
+        PreParticle.changeColour();
       } else {
         this.mode = 'happy';
         this.happyTimestamp = millis();
-        PreBall.mode = 'happy';
-        PreBall.happyTimestamp = millis();
+        PreParticle.mode = 'happy';
+        PreParticle.happyTimestamp = millis();
       }
     }
   }
@@ -168,7 +168,8 @@ class Ball {
     let dx = barrier.position.x - this.p.x;
     let dy = barrier.position.y - this.p.y;
     let distance = sqrt(dx * dx + dy * dy);
-    let radiusSum = this.r / 2 + barrier.circleRadius;
+    let radiusSum = this.r / 2 + barrier.barrierRadius;
+
 
     if (distance < radiusSum) {
       let collisionAngle = atan2(dy, dx);

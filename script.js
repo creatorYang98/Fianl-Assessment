@@ -1,54 +1,46 @@
-var ball
-var balls = []
+var particle
+var particles = []
 let redColour = ["#F55900"]
-let greenColour = ["#5C7C3B"]
+let greenColour = ["#ffde59"]
 let blueColour = ["#4230fa"]
 let barriers = []
-
+let texture
 
 let colours = [redColour, greenColour, blueColour]
 
 function setup() {
-
   createCanvas(1680, 800);
-
   background(0);
   for (var i = 0; i < 20; i++) {
-    let ball = new Ball({
+    let particle = new Particle({
       r: 70,
       p: { x: random(50, width - 50), y: random(50, height - 50) },
       colours: colours
     });
-    balls.push(ball);
+    particles.push(particle);
   }
+  texture = createGraphics(width, height)
+  texture.loadPixels()
+  for (var i = 0; i < width + 50; i ++) { 
+    for (var o = 0; o < height + 50; o ++) { 
+      texture.set(i, o, color(100, noise(i / 3, o / 3, i * o / 50) * random([0, 40, 80])))
+    }
+  }
+  texture.updatePixels()
 }
 
 
 function draw() {
-  fill(0)
+  fill('#094074')
   rect(0, 0, width, height)
 
-  let stColor = color(59, 138, 221)
-  let edColor = color(12, 28, 59)
-  for (var o = -1; o < 10; o++) {
-    noStroke()
-    let midColor = lerpColor(stColor, edColor, o / 10)
-
-    push()
-    translate(0, o * height / 10)
-    fill(midColor)
-    beginShape()
-    vertex(0, 150)
-    for (var i = 0; i < width; i += 2) {
-      vertex(i, sin(i / (30 + noise(o, frameCount / 100) * 100) + o + cos(o + frameCount / 10)) * 30)
-    }
-    vertex(width, 150)
-    endShape(CLOSE)
-    pop()
-  }
+  push()
+  blendMode(MULTIPLY)
+  image(texture, 0, 0)
+  pop()
 
   for (let barrier of barriers) {
-    drawCircle(barrier)
+    drawBarrier(barrier)
   }
 
   for (let i = barriers.length - 1; i >= 0; i--) {
@@ -58,20 +50,18 @@ function draw() {
     }
   }
 
-
   noStroke()
-  for (let i = 0; i < balls.length; i++) {
-    for (let j = i + 1; j < balls.length; j++) {
-      balls[i].checkCollision(balls[j])
+  for (let i = 0; i < particles.length; i++) {
+    for (let j = i + 1; j < particles.length; j++) {
+      particles[i].checkCollision(particles[j])
     }
     for (let barrier of barriers) {
-      balls[i].checkBarrierCollision(barrier);
+      particles[i].checkBarrierCollision(barrier);
     }
-    balls[i].draw()
-    balls[i].update()
+    particles[i].draw()
+    particles[i].update()
   }
 }
-
 
 function randomSpeed() {
   let speed = random(-1, 1);
@@ -89,7 +79,7 @@ function mouseClicked() {
   if (barriers.length >= 10) {
     barriers.shift();
   }
-  let newBarrier = makeCircle(mouseX, mouseY);
+  let newBarrier = createBarrier(mouseX, mouseY);
   barriers.push(newBarrier);
 }
 
