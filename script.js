@@ -71,15 +71,6 @@ function draw() {
     }
     particles[i].draw()
     particles[i].update()
-  } for (let i = 0; i < particles.length; i++) {
-    for (let j = i + 1; j < particles.length; j++) {
-      particles[i].checkCollision(particles[j])
-    }
-    for (let barrier of barriers) {
-      particles[i].checkBarrierCollision(barrier);
-    }
-    particles[i].draw()
-    particles[i].update()
   }
   for (let i = bubbles.length - 1; i >= 0; i--) {
     let bubble = bubbles[i];

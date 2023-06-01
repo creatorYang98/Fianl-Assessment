@@ -170,11 +170,10 @@ class Particle {
     let distance = sqrt(dx * dx + dy * dy);
     let radiusSum = this.r / 2 + barrier.barrierRadius;
 
-    // collision flag
     let collision = false;
 
     if (distance < radiusSum) {
-      collision = true;  // update the flag
+      collision = true;
 
       let collisionAngle = atan2(dy, dx);
 
@@ -186,7 +185,6 @@ class Particle {
       this.p.y -= overlap * sin(collisionAngle);
       this.collidedBarriers.push(barrier);
 
-      // calculate collision point
       let collisionPoint = { x: this.p.x + this.r / 2 * cos(collisionAngle), y: this.p.y + this.r / 2 * sin(collisionAngle) };
       this.createBubblesOnCollision(collisionPoint.x, collisionPoint.y);
 
@@ -195,8 +193,6 @@ class Particle {
 
     return null;
   }
-
-
 
   createBubblesOnCollision(x, y) {
     for (let i = 0; i < 5; i++) {
