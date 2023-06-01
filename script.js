@@ -5,10 +5,13 @@ let greenColour = ["#5C7C3B"]
 let blueColour = ["#4230fa"]
 let barriers = []
 
+
 let colours = [redColour, greenColour, blueColour]
 
 function setup() {
+
   createCanvas(1680, 800);
+
   background(0);
   for (var i = 0; i < 20; i++) {
     let ball = new Ball({
@@ -50,11 +53,11 @@ function draw() {
 
   for (let i = barriers.length - 1; i >= 0; i--) {
     let barrier = barriers[i];
-    drawCircle(barrier);
     if (barrier.lifespan <= 0) {
       barriers.splice(i, 1);
     }
   }
+
 
   noStroke()
   for (let i = 0; i < balls.length; i++) {
@@ -84,8 +87,9 @@ function randomSpeed() {
 
 function mouseClicked() {
   if (barriers.length >= 10) {
-    barriers.shift(); // Remove the first barrier
+    barriers.shift();
   }
   let newBarrier = makeCircle(mouseX, mouseY);
   barriers.push(newBarrier);
 }
+

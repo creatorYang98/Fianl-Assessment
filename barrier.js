@@ -5,7 +5,8 @@ function makeCircle(x, y) {
     angle: 0,
     color: 'blue', 
     spots: [],
-    lifespan: 10,
+    lifespan: 3,
+    collisionTime: 0 
   };
   for (var i = 0; i < 10; i++) {
     cir.spots.push({

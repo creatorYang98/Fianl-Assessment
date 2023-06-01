@@ -9,6 +9,7 @@ class Ball {
     this.happyTimestamp = 0;
     this.angerTime = 0;
     this.colours = args.colours;
+    this.collidedBarriers = [];
   }
 
   draw() {
@@ -32,55 +33,61 @@ class Ball {
       arc(0, 13, 25, 25, 0, PI)
     }
     if (this.mode == 'sad') {
+      push();
       push()
-      rotate(0.09)
-      fill(0)
-      rect(-28, -18, this.r / 3, this.r / 15)
+      rotate(0.09);
+      fill(0);
+      rect(-28, -18, this.r / 3, this.r / 15);
       pop()
-      push()
-      rotate(-0.09)
-      fill(0)
-      rect(5, -18, this.r / 3, this.r / 15)
-      pop()
-      fill(255)
-      arc(-16, -10, this.r / 2.5, this.r / 2.5, 0, PI)
-      fill(0)
-      arc(-16, -10, this.r / 3.5, this.r / 3.5, 0, PI)
-      fill(255)
-      arc(16, -10, this.r / 2.5, this.r / 2.5, 0, PI)
-      fill(0)
-      arc(16, -10, this.r / 3.5, this.r / 3.5, 0, PI)
-      noStroke()
+      push();
+      rotate(-0.09);
+      fill(0);
+      rect(5, -18, this.r / 3, this.r / 15);
+      pop();
+
       fill(255);
-      strokeWeight(2)
+      arc(-16, -10, this.r / 2.5, this.r / 2.5, 0, PI);
+      fill(0);
+      arc(-16, -10, this.r / 3.5, this.r / 3.5, 0, PI);
+      fill(255);
+      arc(16, -10, this.r / 2.5, this.r / 2.5, 0, PI);
+      fill(0);
+      arc(16, -10, this.r / 3.5, this.r / 3.5, 0, PI);
+      noStroke();
+      fill(255);
+      strokeWeight(2);
       arc(0, 23, 25, 20, PI, TWO_PI);
-      pop()
+      pop();
     }
     if (this.mode == 'anger') {
       push()
-      rotate(0.3)
-      fill(0)
-      rect(-30, -16, this.r / 3, this.r / 15)
-      pop()
-      push()
-      rotate(-0.3)
-      fill(0)
-      rect(7, -16, this.r / 3, this.r / 15)
-      pop()
-      fill(255)
-      arc(-16, -10, this.r / 2.5, this.r / 2.5, 0, PI)
-      fill(0)
-      arc(-16, -10, this.r / 3.5, this.r / 3.5, 0, PI)
-      fill(255)
-      arc(16, -10, this.r / 2.5, this.r / 2.5, 0, PI)
-      fill(0)
-      arc(16, -10, this.r / 3.5, this.r / 3.5, 0, PI)
-      stroke(0)
-      fill(255)
-      strokeWeight(2)
+      push();
+      rotate(0.3);
+      fill(0);
+      rect(-30, -16, this.r / 3, this.r / 15);
+      pop();
+
+      push();
+      rotate(-0.3);
+      fill(0);
+      rect(7, -16, this.r / 3, this.r / 15);
+      pop();
+
+      fill(255);
+      arc(-16, -10, this.r / 2.5, this.r / 2.5, 0, PI);
+      fill(0);
+      arc(-16, -10, this.r / 3.5, this.r / 3.5, 0, PI);
+      fill(255);
+      arc(16, -10, this.r / 2.5, this.r / 2.5, 0, PI);
+      fill(0);
+      arc(16, -10, this.r / 3.5, this.r / 3.5, 0, PI);
+      stroke(0);
+      fill(255);
+      strokeWeight(2);
       ellipse(0, 20, 25, 16);
-      pop()
+      pop();
     }
+
     pop()
   }
 
@@ -101,9 +108,10 @@ class Ball {
       this.mode = 'sad';
     }
 
-    for (let barrier of barriers) {
-      this.checkBarrierCollision(barrier);
+    for (let barrier of this.collidedBarriers) {
+      barrier.lifespan--;
     }
+    this.collidedBarriers = [];
   }
 
   changeColour() {
@@ -171,11 +179,7 @@ class Ball {
       let overlap = radiusSum - distance;
       this.p.x -= overlap * cos(collisionAngle);
       this.p.y -= overlap * sin(collisionAngle);
-
-      barrier.lifespan--;
+      this.collidedBarriers.push(barrier);
     }
   }
-
-
-
 }
