@@ -10,7 +10,6 @@ function createBarrier(x, y) {
   return barr;
 }
 
-
 function drawBarrier(barrier) {
   var pos = barrier.position;
   var r = barrier.barrierRadius;

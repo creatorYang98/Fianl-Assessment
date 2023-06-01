@@ -6,13 +6,14 @@ let blueColour = ["#4230fa"]
 let barriers = []
 let texture
 let backgroundColours = ["#094074", "#3c6997", "#5adbff", "#718e54", "#fe9000"];
-let currentBgColour = backgroundColours[0];
+let currentBgColour
 
 let colours = [redColour, greenColour, blueColour]
 let bubbles = []
 
 function setup() {
-  createCanvas(1680, 800);
+  createCanvas(windowWidth, windowHeight)
+   currentBgColour = random(backgroundColours);
   background(0);
   for (var i = 0; i < 20; i++) {
     let particle = new Particle({
@@ -105,4 +106,8 @@ function mouseClicked() {
     let newBarrier = createBarrier(mouseX, mouseY);
     barriers.push(newBarrier);
   }
+}
+
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight)
 }
