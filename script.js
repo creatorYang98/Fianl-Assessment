@@ -18,7 +18,7 @@ let bubbles = []
 
 // background texture
 let texture
-let backgroundColours = ["#094074", "#3c6997", "#5adbff", "#718e54", "#fe9000"];
+let backgroundColours = ["#f2acbf", "#3c6997", "#5adbff", "#718e54", "#fe9000"];
 let currentBgColour
 
 function setup() {

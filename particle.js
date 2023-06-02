@@ -146,6 +146,7 @@ class Particle {
     this.currentColour = newColour;
   }
 
+
   // check particle's collision
   checkCollision(PreParticle) {
     // Calculate the distance between the two particles on the x and y axes.
@@ -182,7 +183,6 @@ class Particle {
           break;
         }
       }
-
       // If they are not in the same colour group then they will show 'anger' mode, and also random their colour.
       if (!sameColourGroup) {
         this.mode = 'anger';
@@ -201,9 +201,9 @@ class Particle {
     }
   }
 
+
   // check the collision between particle and barrier
   checkBarrierCollision(barrier) {
-
     // calculate the distance between the centre of the particle and the centre of the barrier in the x and y directions.
     let dx = barrier.position.x - this.p.x;
     let dy = barrier.position.y - this.p.y;
